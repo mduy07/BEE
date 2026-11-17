@@ -1,0 +1,57 @@
+﻿@model IEnumerable<BEE.Models.Category>
+
+@{
+    ViewBag.Title = "Quản lý thể loại - Steam Admin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="margin-top: 30px; margin-bottom: 50px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="color: #66c0f4; font-weight: bold;">🏷 Quản lý Thể loại Game</h2>
+        <div style="display: flex; gap: 10px;">
+            <a href="@Url.Action("Index", "Admin")" class="btn btn-outline-secondary" style="color: #c7d5e0; border-color: #2a475e;">&larr; Quản lý Game</a>
+            <a href="@Url.Action("CreateCategory", "Admin")" class="btn btn-success" style="background-color: #5c7e10; border: none; font-weight: bold;">
+                ➕ Thêm Thể Loại Mới
+            </a>
+        </div>
+    </div>
+    <hr style="border-color: #2a475e;" />
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" style="background-color: #1b2838; border-color: #5c7e10; color: #beee11;">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" style="background-color: #1b2838; border-color: #d9534f; color: #ff6b6b;">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-dark table-striped" style="background-color: #1b2838; border-radius: 6px; overflow: hidden;">
+            <thead>
+                <tr style="background-color: #2a475e; color: #66c0f4;">
+                    <th>Mã loại (ID)</th>
+                    <th>Tên Thể Loại</th>
+                    <th class="text-center">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="vertical-align: middle; color: #8f98a0; font-weight: bold;">#@item.CategoryID</td>
+                        <td style="vertical-align: middle; font-weight: bold; color: #fff; font-size: 16px;">@item.CategoryName</td>
+                        <td style="vertical-align: middle; text-align: center;">
+                            <a href="@Url.Action("EditCategory", "Admin", new { id = item.CategoryID })" class="btn btn-sm btn-primary" style="margin-right: 5px;">Sửa</a>
+                            <a href="@Url.Action("DeleteCategory", "Admin", new { id = item.CategoryID })" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa thể loại này?');">Xóa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

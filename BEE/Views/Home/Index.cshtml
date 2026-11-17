@@ -1,0 +1,339 @@
+﻿
+@model IEnumerable<BEE.Models.Product>
+
+@{
+    ViewBag.Title = "Steam Game Store - Trang chủ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var categories = ViewBag.Categories as IEnumerable<BEE.Models.Category>;
+    int? selectedCategory = ViewBag.SelectedCategory as int?;
+    string searchString = ViewBag.SearchString as string;
+}
+
+<style>
+    body {
+        background-color: #171a21;
+        color: #c7d5e0;
+    }
+
+    .store-container {
+        margin-top: 30px;
+        margin-bottom: 50px;
+    }
+
+    .store-heading {
+        color: #66c0f4;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .category-box {
+        background: #1b2838;
+        border: 1px solid #2a475e;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    .category-link {
+        display: block;
+        padding: 13px 15px;
+        color: #c7d5e0;
+        border-bottom: 1px solid #2a475e;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+        .category-link:hover,
+        .category-link.active {
+            background: #2a475e;
+            color: #66c0f4;
+            text-decoration: none;
+        }
+
+    .search-input {
+        background: #101822;
+        color: white;
+        border: 1px solid #2a475e;
+        height: 45px;
+    }
+
+        .search-input:focus {
+            background: #101822;
+            color: white;
+            border-color: #66c0f4;
+            box-shadow: none;
+        }
+
+    .game-card {
+        background: #1b2838;
+        border: 1px solid #2a475e;
+        border-radius: 6px;
+        overflow: hidden;
+        height: 100%;
+        transition: 0.25s;
+    }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: #66c0f4;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.3);
+        }
+
+    .game-image {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+    }
+
+    .game-info {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 145px;
+    }
+
+    .game-name {
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        min-height: 40px;
+    }
+
+    .game-price {
+        color: #beee11;
+        font-size: 17px;
+        font-weight: bold;
+    }
+
+    .game-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+        .game-actions a {
+            flex: 1;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+    .btn-detail {
+        color: #66c0f4;
+        border: 1px solid #66c0f4;
+    }
+
+        .btn-detail:hover {
+            background: #66c0f4;
+            color: #171a21;
+        }
+
+    .btn-cart {
+        background: #5c7e10;
+        color: white;
+        border: none;
+    }
+
+        .btn-cart:hover {
+            background: #7da313;
+            color: white;
+        }
+
+    .empty-box {
+        background: #1b2838;
+        border: 1px solid #2a475e;
+        border-radius: 6px;
+        padding: 50px 20px;
+        text-align: center;
+    }
+</style>
+
+<div class="container store-container">
+
+    <div class="row">
+
+        <!-- DANH MỤC GAME -->
+        <div class="col-md-3 mb-4">
+
+            <h4 class="store-heading">
+                🎮 Thể loại Game
+            </h4>
+
+            <div class="category-box">
+
+                <a href="@Url.Action("Index", "Home")"
+                   class="category-link @(selectedCategory == null ? "active" : "")">
+                    🔥 Tất cả Game
+                </a>
+
+                @if (categories != null)
+                {
+                    foreach (var cat in categories)
+                    {
+                        <a href="@Url.Action("Index", "Home", new { categoryId = cat.CategoryID })"
+                           class="category-link @(selectedCategory == cat.CategoryID ? "active" : "")">
+                            🎮 @cat.CategoryName
+                        </a>
+                    }
+                }
+
+            </div>
+        </div>
+
+        <!-- DANH SÁCH SẢN PHẨM -->
+        <div class="col-md-9">
+
+            <!-- TÌM KIẾM -->
+            @using (Html.BeginForm("Index", "Home", FormMethod.Get))
+            {
+                <div class="input-group mb-4">
+
+                    <input type="text"
+                           name="searchString"
+                           class="form-control search-input"
+                           placeholder="Tìm kiếm tựa game..."
+                           value="@searchString" />
+
+                    @if (selectedCategory.HasValue)
+                    {
+                        <input type="hidden"
+                               name="categoryId"
+                               value="@selectedCategory.Value" />
+                    }
+
+                    <button type="submit"
+                            class="btn btn-primary"
+                            style="background:#66c0f4; color:#171a21; font-weight:bold; border:none;">
+                        🔍 Tìm kiếm
+                    </button>
+
+                </div>
+            }
+
+            <!-- TIÊU ĐỀ -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h4 class="store-heading mb-0">
+                    @if (selectedCategory.HasValue)
+                    {
+                        <span>Game theo thể loại</span>
+                    }
+                    else
+                    {
+                        <span>🔥 Khám phá Game</span>
+                    }
+                </h4>
+
+                <span style="color:#8f98a0;">
+                    @(Model == null ? 0 : Model.Count()) sản phẩm
+                </span>
+
+            </div>
+
+            <hr style="border-color:#2a475e;" />
+
+            <!-- KIỂM TRA SẢN PHẨM -->
+            @if (Model == null || !Model.Any())
+            {
+                <div class="empty-box">
+
+                    <h3 style="color:#66c0f4;">
+                        😢 Không tìm thấy game
+                    </h3>
+
+                    <p>
+                        Hãy thử tìm kiếm bằng từ khóa khác
+                        hoặc chọn thể loại khác.
+                    </p>
+
+                    <a href="@Url.Action("Index", "Home")"
+                       class="btn btn-primary mt-3">
+                        Xem tất cả Game
+                    </a>
+
+                </div>
+            }
+            else
+            {
+                <div class="row">
+
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
+
+                            <div class="game-card">
+
+                                @{
+                                    string imgPath = "";
+
+                                    if (!string.IsNullOrEmpty(item.ProductImage))
+                                    {
+                                        imgPath = item.ProductImage.StartsWith(
+                                            "http",
+                                            StringComparison.OrdinalIgnoreCase)
+                                            ? item.ProductImage
+                                            : Url.Content("~/Content/images/" + item.ProductImage);
+                                    }
+                                }
+
+                                <!-- ẢNH GAME -->
+                                <img src="@(string.IsNullOrEmpty(imgPath)
+                                    ? Url.Content("~/Content/images/no-image.png")
+                                    : imgPath)"
+                                     class="game-image"
+                                     alt="@item.ProductName"
+                                     onerror="this.onerror=null;this.src='https://placehold.co/600x300/1b2838/66c0f4?text=Game+Image';" />
+
+                                <!-- THÔNG TIN GAME -->
+                                <div class="game-info">
+
+                                    <div>
+
+                                        <h5 class="game-name">
+                                            @item.ProductName
+                                        </h5>
+
+                                        <p class="game-price">
+                                            @(item.ProductPrice == 0
+                                                ? "Miễn phí"
+                                                : item.ProductPrice.ToString("N0") + " VNĐ")
+                                        </p>
+
+                                    </div>
+
+                                    <!-- NÚT CHỨC NĂNG -->
+                                    <div class="game-actions">
+
+                                        @Html.ActionLink(
+                                                 "Chi tiết",
+                                                 "Details",
+                                                 "Home",
+                                                 new { id = item.ProductID },
+                                                 new { @class = "btn btn-sm btn-detail" }
+                                             )
+
+                                        @Html.ActionLink(
+                                                 "Thêm vào giỏ",
+                                                 "AddToCart",
+                                                 "Cart",
+                                                 new { id = item.ProductID },
+                                                 new { @class = "btn btn-sm btn-cart" }
+                                             )
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

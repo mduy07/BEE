@@ -1,0 +1,43 @@
+﻿@model BEE.Models.Product
+
+@{
+    ViewBag.Title = "Thêm game mới - Steam Admin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="margin-top: 30px; margin-bottom: 50px; color: #c7d5e0;">
+    <div style="background-color: #1b2838; border: 1px solid #2a475e; padding: 30px; border-radius: 8px;">
+        <h2 style="color: #66c0f4; font-weight: bold; margin-bottom: 20px;">➕ Thêm Tựa Game Bản Quyền Mới</h2>
+        <hr style="border-color: #2a475e;" />
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="color: #66c0f4; font-weight: bold;">Tên Game:</label>
+                @Html.TextBoxFor(model => model.ProductName, new { @class = "form-control", @required = "required", style = "background-color: #101822; color: #fff; border: 1px solid #2a475e;" })
+            </div>
+
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="color: #66c0f4; font-weight: bold;">Thể loại (Category):</label>
+                @Html.DropDownList("CategoryID", null, htmlAttributes: new { @class = "form-control", style = "background-color: #101822; color: #fff; border: 1px solid #2a475e;" })
+            </div>
+
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="color: #66c0f4; font-weight: bold;">Giá bán (VNĐ):</label>
+                @Html.TextBoxFor(model => model.ProductPrice, new { @class = "form-control", @type = "number", @required = "required", style = "background-color: #101822; color: #fff; border: 1px solid #2a475e;" })
+            </div>
+
+            <div class="form-group" style="margin-bottom: 25px;">
+                <label style="color: #66c0f4; font-weight: bold;">Đường dẫn ảnh (Link ảnh Steam CDN hoặc tên file):</label>
+                @Html.TextBoxFor(model => model.ProductImage, new { @class = "form-control", placeholder = "https://... hoặc tên file ảnh", style = "background-color: #101822; color: #fff; border: 1px solid #2a475e;" })
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <button type="submit" class="btn btn-success btn-lg" style="background-color: #5c7e10; border: none; font-weight: bold; padding: 10px 25px;">Lưu Game</button>
+                <a href="@Url.Action("Index", "Admin")" class="btn btn-outline-secondary" style="color: #c7d5e0; border-color: #2a475e; padding: 10px 20px;">Quay lại</a>
+            </div>
+        }
+    </div>
+</div>

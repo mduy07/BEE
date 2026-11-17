@@ -1,0 +1,61 @@
+﻿@model BEE.Models.ViewModel.RegisterVM
+
+@{
+    ViewBag.Title = "Đăng ký tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="max-width: 600px; margin-top: 40px; margin-bottom: 50px;">
+    <h2 class="text-center">Đăng ký tài khoản mới</h2>
+    <hr />
+
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label>Tên đăng nhập (*)</label>
+            @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Nhập tên đăng nhập..." })
+            @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label>Mật khẩu (*)</label>
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Nhập mật khẩu..." })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label>Xác nhận mật khẩu (*)</label>
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Nhập lại mật khẩu..." })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label>Họ và tên (*)</label>
+            @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control", placeholder = "Nhập họ tên đầy đủ..." })
+            @Html.ValidationMessageFor(m => m.CustomerName, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label>Email</label>
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Nhập email..." })
+        </div>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label>Số điện thoại</label>
+            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", placeholder = "Nhập số điện thoại..." })
+        </div>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label>Địa chỉ</label>
+            @Html.TextBoxFor(m => m.Address, new { @class = "form-control", placeholder = "Nhập địa chỉ giao hàng..." })
+        </div>
+
+        <button type="submit" class="btn btn-success btn-block" style="width: 100%; margin-top: 10px;">Đăng ký</button>
+    }
+    <div class="text-center" style="margin-top: 15px;">
+        <p>Đã có tài khoản? <a href="@Url.Action("Login", "Account")">Đăng nhập ngay</a></p>
+    </div>
+</div>

@@ -1,0 +1,300 @@
+﻿
+@model IEnumerable<BEE.Models.CartItem>
+
+@{
+    ViewBag.Title = "Giỏ hàng - Steam Game Store";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    decimal total = ViewBag.Total != null
+        ? Convert.ToDecimal(ViewBag.Total)
+        : 0;
+}
+
+<style>
+    .cart-container {
+        margin-top: 35px;
+        margin-bottom: 60px;
+        color: #c7d5e0;
+    }
+
+    .cart-title {
+        color: #66c0f4;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .cart-box {
+        background: #1b2838;
+        border: 1px solid #2a475e;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .cart-table {
+        color: #c7d5e0;
+        margin-bottom: 0;
+    }
+
+        .cart-table thead {
+            background: #2a475e;
+            color: #66c0f4;
+        }
+
+        .cart-table th,
+        .cart-table td {
+            padding: 16px 12px;
+            vertical-align: middle;
+            border-color: #2a475e;
+        }
+
+        .cart-table tbody tr:hover {
+            background: #223448;
+        }
+
+    .cart-image {
+        width: 110px;
+        height: 65px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+    .cart-product-name {
+        color: white;
+        font-weight: bold;
+    }
+
+    .cart-price {
+        color: #beee11;
+        font-weight: bold;
+    }
+
+    .quantity-input {
+        width: 75px;
+        background: #101822;
+        color: white;
+        border: 1px solid #2a475e;
+        padding: 6px;
+        border-radius: 4px;
+    }
+
+    .cart-summary {
+        background: #1b2838;
+        border: 1px solid #2a475e;
+        border-radius: 8px;
+        padding: 25px;
+        margin-top: 25px;
+    }
+
+    .btn-steam {
+        background: #66c0f4;
+        color: #171a21;
+        font-weight: bold;
+        border: none;
+    }
+
+        .btn-steam:hover {
+            background: #8bd5ff;
+            color: #171a21;
+        }
+
+    .btn-checkout {
+        background: #5c7e10;
+        color: white;
+        font-weight: bold;
+        border: none;
+    }
+
+        .btn-checkout:hover {
+            background: #7da313;
+            color: white;
+        }
+
+    .empty-cart {
+        background: #1b2838;
+        border: 1px solid #2a475e;
+        padding: 55px 20px;
+        text-align: center;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="container cart-container">
+
+    <h2 class="cart-title">🛒 Giỏ hàng của bạn</h2>
+
+    <hr style="border-color:#2a475e;" />
+
+    @if (TempData["CartMessage"] != null)
+    {
+        <div class="alert alert-info">
+            @TempData["CartMessage"]
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-cart">
+
+            <h3 style="color:#66c0f4;">
+                🛒 Giỏ hàng đang trống
+            </h3>
+
+            <p style="margin-top:15px;">
+                Hãy khám phá cửa hàng và chọn những tựa game yêu thích.
+            </p>
+
+            <a href="@Url.Action("Index", "Home")"
+               class="btn btn-steam mt-3">
+                Khám phá cửa hàng
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <div class="cart-box table-responsive">
+
+            <table class="table cart-table">
+
+                <thead>
+                    <tr>
+                        <th>Hình ảnh</th>
+                        <th>Tên game</th>
+                        <th>Đơn giá</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                @{
+                                    string imgPath = string.Empty;
+
+                                    if (!string.IsNullOrEmpty(item.ProductImage))
+                                    {
+                                        imgPath = item.ProductImage.StartsWith(
+                                            "http",
+                                            StringComparison.OrdinalIgnoreCase)
+                                            ? item.ProductImage
+                                            : Url.Content("~/Content/images/" + item.ProductImage);
+                                    }
+                                }
+
+                                <img src="@(string.IsNullOrEmpty(imgPath)
+                                    ? "https://placehold.co/300x160/1b2838/66c0f4?text=Game"
+                                    : imgPath)"
+                                     class="cart-image"
+                                     alt="@item.ProductName"
+                                     onerror="this.onerror=null;this.src='https://placehold.co/300x160/1b2838/66c0f4?text=Game';" />
+                            </td>
+
+                            <td>
+                                <span class="cart-product-name">
+                                    @item.ProductName
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="cart-price">
+                                    @item.UnitPrice.ToString("N0") VNĐ
+                                </span>
+                            </td>
+
+                            <td>
+                                @using (Html.BeginForm(
+                                    "UpdateQuantity",
+                                    "Cart",
+                                    FormMethod.Get))
+                                {
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@item.ProductID" />
+
+                                    <input type="number"
+                                           name="quantity"
+                                           value="@item.Quantity"
+                                           min="1"
+                                           max="99"
+                                           class="quantity-input" />
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-info mt-1">
+                                        Cập nhật
+                                    </button>
+                                }
+                            </td>
+
+                            <td>
+                                <span class="cart-price">
+                                    @item.TotalPrice.ToString("N0") VNĐ
+                                </span>
+                            </td>
+
+                            <td>
+                                @using (Html.BeginForm(
+                                    "RemoveFromCart",
+                                    "Cart",
+                                    new { id = item.ProductID },
+                                    FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Bạn có chắc muốn xóa game này?');">
+                                        Xóa
+                                    </button>
+                                }
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="cart-summary">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-6 mb-3 mb-md-0">
+
+                    <a href="@Url.Action("Index", "Home")"
+                       class="btn btn-outline-info">
+                        ← Tiếp tục mua sắm
+                    </a>
+
+                </div>
+
+                <div class="col-md-6 text-md-right">
+
+                    <h4 style="color:white;">
+                        Tổng thanh toán:
+                    </h4>
+
+                    <h3 class="cart-price mb-3">
+                        @total.ToString("N0") VNĐ
+                    </h3>
+
+                    <a href="@Url.Action("Checkout", "Cart")"
+                       class="btn btn-checkout btn-lg">
+                        💳 Tiến hành thanh toán
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

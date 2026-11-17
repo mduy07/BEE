@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Đặt hàng thành công - Steam Store";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container text-center" style="margin-top: 60px; margin-bottom: 60px;">
+    <div style="background-color: #1b2838; border: 1px solid #2a475e; padding: 40px; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.6);">
+        <h1 style="color: #beee11; font-weight: bold; font-size: 50px; margin-bottom: 20px;">✔</h1>
+        <h2 style="color: #66c0f4; font-weight: bold;">Thanh toán thành công!</h2>
+        <p style="color: #c7d5e0; font-size: 18px; margin-top: 15px;">
+            Cảm ơn bạn đã mua sắm. Mã đơn hàng của bạn là: <b style="color: #beee11;">#@ViewBag.OrderId</b>
+        </p>
+        <p style="color: #8f98a0; max-width: 600px; margin: 0 auto 30px auto;">
+            Hệ thống đã ghi nhận giao dịch bản quyền game của bạn. Bạn có thể kiểm tra lại các tựa game đã mua trong mục lịch sử giao dịch.
+        </p>
+
+        <div style="display: flex; justify-content: center; gap: 15px;">
+            <a href="@Url.Action("OrderHistory", "Cart")" class="btn btn-info" style="font-weight: bold; padding: 10px 20px;">
+                📜 Xem lịch sử mua hàng
+            </a>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-steam" style="font-weight: bold; padding: 10px 20px; background-color: #5c7e10; color: #fff; border: none;">
+                🎮 Tiếp tục khám phá Game
+            </a>
+        </div>
+    </div>
+</div>
